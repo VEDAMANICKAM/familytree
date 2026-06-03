@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Directory Tree</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --core-color: #3b82f6; /* Ocean Blue for your line */
+            --inlaw-color: #a855f7; /* Purple for Spouses */
+            --border-line: #334155;
+            --panel-bg: #1e293b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Fixed Headings */
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .parents-title {
+            background: linear-gradient(135deg, #1e1b4b, #311042);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border-line);
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .tree-container {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Collapsible Node Layout */
+        .node-group {
+            border-left: 2px dashed var(--border-line);
+            margin-left: 10px;
+            padding-left: 15px;
+        }
+
+        .person-row {
+            background-color: var(--panel-bg);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        /* Distinguish bloodline vs in-laws visually */
+        .person-row.core { border-left: 4px solid var(--core-color); }
+        .person-row.inlaw { border-left: 4px solid var(--inlaw-color); margin-left: 10px;}
+
+        .name-header {
+            font-weight: 600;
+            font-size: 1.05rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .name-header::after {
+            content: '▾';
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .active > .name-header::after { content: '▴'; }
+
+        /* Hidden Details (Revealed on click/hover) */
+        .details-pane {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.25s ease-out;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0;
+        }
+
+        .active > .details-pane {
+            max-height: 120px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #334155;
+        }
+
+        .details-pane div { margin-bottom: 4px; }
+        .details-pane a { color: #a3e635; text-decoration: none; font-weight: bold; }
+
+        /* Child Sub-branches (Hidden until parent is active) */
+        .sub-branch {
+            display: none;
+        }
+        
+        .node-group.active-branch > .sub-branch {
+            display: block;
+        }
+
+        .label-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #0f172a;
+        }
+        .core .label-tag { color: var(--core-color); }
+        .inlaw .label-tag { color: var(--inlaw-color); }
+    </style>
+</head>
+<body>
+
+    <div class="header-section">
+        <!-- 1. Heading Mother & Father -->
+        <div class="parents-title">🧓 Father & Mother 👵</div>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Tap any name to expand details, spouses, and children</p>
+    </div>
+
+    <main class="tree-container">
+        
+        <!-- ─── MEMBER 1 START SKELETON ─── -->
+        <!-- To add member 2, 3, 4 etc., copy from here down to the END tag -->
+        <div class="node-group">
+            
+            <!-- Core Member Name Card -->
+            <div class="person-row core" onclick="toggleNode(this)">
+                <div class="name-header">
+                    <span>Member 1 (Your Family)</span>
+                    <span class="label-tag">Core</span>
+                </div>
+                <div class="details-pane">
+                    <div><b>Gender:</b> Male</div>
+                    <div><b>DOB:</b> 12/05/1984</div>
+                    <div><b>Status:</b> Married to Jane Doe</div>
+                    <div><b>Mobile:</b> <a href="tel:+15550101">📱 +1 555-0101</a></div>
+                </div>
+            </div>
+
+            <!-- Sub-branch holding spouse and children (reveals when Member 1 is clicked) -->
+            <div class="sub-branch">
+                
+                <!-- Spousal Row Connected to Member 1 -->
+                <div class="person-row inlaw" onclick="toggleNode(this)">
+                    <div class="name-header">
+                        <span>Jane Doe (Spouse)</span>
+                        <span class="label-tag">In-Law</span>
+                    </div>
+                    <div class="details-pane">
+                        <div><b>Gender:</b> Female</div>
+                        <div><b>DOB:</b> 23/11/1987</div>
+                        <div><b>Mobile:</b> <a href="tel:+15550102">📱 +1 555-0102</a></div>
+                    </div>
+                </div>
+
+                <!-- Child Node Group -->
+                <div class="node-group">
+                    <div class="person-row core" onclick="toggleNode(this)">
+                        <div class="name-header">
+                            <span>Child 1</span>
+                            <span class="label-tag">Child</span>
+                        </div>
+                        <div class="details-pane">
+                            <div><b>Gender:</b> Female</div>
+                            <div><b>DOB:</b> 14/08/2010</div>
+                            <div><b>Status:</b> Married to Grand-In-Law</div>
+                            <div><b>Mobile:</b> <a href="tel:+15550103">📱 +1 555-0103</a></div>
+                        </div>
+                    </div>
+
+                    <!-- Further generation expansion (Child's marriage partner) -->
+                    <div class="sub-branch">
+                        <div class="person-row inlaw" onclick="toggleNode(this)">
+                            <div class="name-header">
+                                <span>Child's Partner (Spouse)</span>
+                                <span class="label-tag">In-Law</span>
+                            </div>
+                            <div class="details-pane">
+                                <div><b>Gender:</b> Male</div>
+                                <div><b>DOB:</b> 02/02/2008</div>
+                                <div><b>Mobile:</b> <a href="tel:+15550104">📱 +1 555-0104</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End Child Group -->
+
+            </div> <!-- End Sub-branch -->
+
+        </div> 
+        <!-- ─── MEMBER 1 END SKELETON ─── -->
+
+    </main>
+
+    <script>
+        function toggleNode(element) {
+            // Toggle details viewing panel
+            element.classList.toggle('active');
+            
+            // Toggle the child generation branch beneath it
+            const parentGroup = element.parentElement;
+            if(parentGroup.classList.contains('node-group')) {
+                parentGroup.classList.toggle('active-branch');
+            }
+        }
+    </script>
+</body>
+</html>
